@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   CreditCard, ArrowLeft, ShieldCheck, CheckCircle2, User,
   QrCode, Copy, AlertCircle, Loader, Clock, Smartphone,
   Mail, Key, Hash
 } from 'lucide-react';
+import { useAnalytics } from '../hooks/useAnalytics';
+
+const { trackPageView, trackCheckout, trackConversion } = useAnalytics();
 
 interface CartItem {
   eventId: string;
@@ -32,7 +35,7 @@ interface OrderResponse {
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cart, eventTitle } = (location.state as { cart: CartItem[], eventTitle: string }) || { cart: [], eventTitle: '' };
+  const { cart, eventTitle, EventId } = (location.state as { cart: CartItem[], eventTitle: string, EventId: string }) || { cart: [], eventTitle: '', EventId: '' };
 
   const API_URL = import.meta.env.VITE_API_URL ||
     'https://guiche-master-backend.vercel.app';
@@ -51,6 +54,11 @@ const Checkout = () => {
     cpf: '',
     phone: ''
   });
+
+  useEffect(() => {
+    trackPageView('/checkout', EventId);
+    trackCheckout(EventId, cart, total);
+  }, []);
 
   const total = cart.reduce((acc, item) => acc + (item.price + item.fee) * item.quantity, 0);
 
@@ -217,6 +225,9 @@ const Checkout = () => {
   };
 
   const confirmPayment = () => {
+    if (orderData && EventId) {
+      trackConversion(EventId, orderData.id, total);
+    }
     setStep('success');
   };
 

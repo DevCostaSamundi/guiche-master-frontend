@@ -3,6 +3,9 @@ import { Search, MapPin, Calendar, Smartphone } from 'lucide-react';
 import { mockEvents } from './services/mockData';
 import EventDetails from './components/EventDetails';
 import Checkout from './components/Checkout';
+import AnalyticsDashboard from './components/AnalyticsDashboard';
+
+// Dentro de <Routes>:
 
 const Header = () => {
   return (
@@ -130,6 +133,7 @@ const App = () => {
           <Route path="/" element={<EventGrid />} />
           <Route path="/event/:id" element={<EventDetails />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/analytics" element={<AnalyticsDashboard />} />
         </Routes>
       </main>
       <Footer />
