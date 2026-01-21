@@ -194,7 +194,7 @@ const Checkout = () => {
         throw new Error(data.error || 'Erro ao processar pedido');
       }
 
-      console.log('✅ Resposta do backend:', data);
+      console.log('✅ Resposta do backend:');
 
       setPixData(data.pix);
       setOrderData(data.order);
