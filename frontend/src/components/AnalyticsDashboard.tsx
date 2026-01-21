@@ -119,7 +119,7 @@ const AnalyticsDashboard = () => {
           </form>
 
           <p className="text-xs text-zinc-400 text-center mt-6">
-            Chave padrão: <code className="bg-zinc-100 px-2 py-1 rounded">guiche2024@analytics</code>
+            Chave padrão: <code className="bg-zinc-100 px-2 py-1 rounded">....@..</code>
           </p>
         </div>
       </div>
