@@ -34,8 +34,10 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { cart, eventTitle } = (location.state as { cart: CartItem[], eventTitle: string }) || { cart: [], eventTitle: '' };
   
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-
+const BACKEND_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.NODE_ENV === 'production' 
+    ? 'https://guiche-master-backend.vercel.app'
+    : 'http://localhost:3001');
   const [step, setStep] = useState<'form' | 'pix' | 'success'>('form');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
