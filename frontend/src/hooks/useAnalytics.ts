@@ -1,22 +1,24 @@
-import { useCallback } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
-// Gerar ID de sessão único (fora do hook)
-const getSessionId = (): string => {
-  let sessionId = sessionStorage.getItem('analytics_session');
+// src/hooks/useAnalytics.ts
+ const API_URL = import.meta.env.VITE_API_URL ||
+    'https://guiche-master-backend.vercel.app';
+// Função para obter/criar sessionId (fora de qualquer hook)
+function getOrCreateSessionId(): string {
+  const key = 'analytics_session';
+  let sessionId = sessionStorage.getItem(key);
+  
   if (!sessionId) {
     sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    sessionStorage.setItem('analytics_session', sessionId);
+    sessionStorage.setItem(key, sessionId);
   }
+  
   return sessionId;
-};
+}
 
-export const useAnalytics = () => {
-  // Chamar getSessionId() diretamente, sem useRef
-  const sessionId = getSessionId();
+// Hook simplificado SEM useRef, useCallback, etc.
+export function useAnalytics() {
+  const sessionId = getOrCreateSessionId();
 
-  const trackPageView = useCallback(async (page: string, eventId?: string) => {
+  async function trackPageView(page: string, eventId?: string) {
     try {
       await fetch(`${API_URL}/api/analytics/pageview`, {
         method: 'POST',
@@ -31,9 +33,9 @@ export const useAnalytics = () => {
     } catch (error) {
       console.error('Analytics pageview error:', error);
     }
-  }, [sessionId]);
+  }
 
-  const trackClick = useCallback(async (eventId: string, action: string, data?: any) => {
+  async function trackClick(eventId: string, action: string, data?: any) {
     try {
       await fetch(`${API_URL}/api/analytics/click`, {
         method: 'POST',
@@ -48,9 +50,9 @@ export const useAnalytics = () => {
     } catch (error) {
       console.error('Analytics click error:', error);
     }
-  }, [sessionId]);
+  }
 
-  const trackCheckout = useCallback(async (eventId: string, items: any[], total: number) => {
+  async function trackCheckout(eventId: string, items: any[], total: number) {
     try {
       await fetch(`${API_URL}/api/analytics/checkout`, {
         method: 'POST',
@@ -65,9 +67,9 @@ export const useAnalytics = () => {
     } catch (error) {
       console.error('Analytics checkout error:', error);
     }
-  }, [sessionId]);
+  }
 
-  const trackConversion = useCallback(async (eventId: string, orderId: string, total: number) => {
+  async function trackConversion(eventId: string, orderId: string, total: number) {
     try {
       await fetch(`${API_URL}/api/analytics/conversion`, {
         method: 'POST',
@@ -82,7 +84,7 @@ export const useAnalytics = () => {
     } catch (error) {
       console.error('Analytics conversion error:', error);
     }
-  }, [sessionId]);
+  }
 
   return {
     trackPageView,
@@ -90,4 +92,4 @@ export const useAnalytics = () => {
     trackCheckout,
     trackConversion
   };
-};
+}
